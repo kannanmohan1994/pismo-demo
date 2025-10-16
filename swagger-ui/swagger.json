@@ -1,0 +1,444 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "xm API Documentation !!",
+    "title": "xm",
+    "version": "1.0.0"
+  },
+  "host": "localhost:9000",
+  "basePath": "/",
+  "paths": {
+    "/v1/company": {
+      "post": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Creates a Company",
+        "tags": [
+          "Company"
+        ],
+        "operationId": "idCreateCompany",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/CreateCompanyRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/CreateCompanyResponseWrapper"
+          },
+          "400": {
+            "$ref": "#/responses/CustomErrorWrapper"
+          }
+        }
+      }
+    },
+    "/v1/company/{company_id}": {
+      "get": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Fetch company data",
+        "tags": [
+          "Company"
+        ],
+        "operationId": "idGetCompany",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "CompanyID",
+            "name": "company_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetCompanyResponseWrapper"
+          },
+          "400": {
+            "$ref": "#/responses/CustomErrorWrapper"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Delete company data",
+        "tags": [
+          "Company"
+        ],
+        "operationId": "idDeleteCompany",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "CompanyID",
+            "name": "company_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/DeleteCompanyResponseWrapper"
+          },
+          "400": {
+            "$ref": "#/responses/CustomErrorWrapper"
+          }
+        }
+      },
+      "patch": {
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "description": "Patch company data",
+        "tags": [
+          "Company"
+        ],
+        "operationId": "idPatchCompany",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "CompanyID",
+            "name": "company_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/PatchCompanyRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/PatchCompanyResponseWrapper"
+          },
+          "400": {
+            "$ref": "#/responses/CustomErrorWrapper"
+          }
+        }
+      }
+    },
+    "/v1/health": {
+      "get": {
+        "description": "Checks the health of xm app",
+        "tags": [
+          "Health"
+        ],
+        "operationId": "idGetHealth",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/GetHealthResponse"
+          }
+        }
+      }
+    },
+    "/v1/user/login": {
+      "post": {
+        "description": "Creates a User",
+        "tags": [
+          "User"
+        ],
+        "operationId": "idLoginUser",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/LoginUserResponseWrapper"
+          },
+          "400": {
+            "$ref": "#/responses/CustomErrorWrapper"
+          }
+        }
+      }
+    },
+    "/v1/user/register": {
+      "post": {
+        "description": "Creates a User",
+        "tags": [
+          "User"
+        ],
+        "operationId": "idCreateUser",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UserRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/CreateUserResponseWrapper"
+          },
+          "400": {
+            "$ref": "#/responses/CustomErrorWrapper"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Company": {
+      "type": "object",
+      "properties": {
+        "companyType": {
+          "$ref": "#/definitions/CompanyType"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt"
+        },
+        "description": {
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "employeeCount": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "EmployeeCount"
+        },
+        "id": {
+          "type": "string",
+          "x-go-name": "ID"
+        },
+        "isRegistered": {
+          "type": "boolean",
+          "x-go-name": "IsRegistered"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt"
+        }
+      },
+      "x-go-package": "xm/internal/entity/models"
+    },
+    "CompanyType": {
+      "type": "string",
+      "x-go-package": "xm/consts"
+    },
+    "CreateCompanyRequest": {
+      "type": "object",
+      "properties": {
+        "companyType": {
+          "$ref": "#/definitions/CompanyType"
+        },
+        "description": {
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "employeeCount": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "EmployeeCount"
+        },
+        "isRegistered": {
+          "type": "boolean",
+          "x-go-name": "IsRegistered"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "xm/internal/entity/request"
+    },
+    "CustomError": {
+      "description": "CustomError : The error format in api response",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Code"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Details"
+        }
+      },
+      "x-go-package": "xm/utils"
+    },
+    "Health": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "x-go-name": "Message"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-package": "xm/internal/entity/response"
+    },
+    "PatchCompanyRequest": {
+      "type": "object",
+      "properties": {
+        "companyType": {
+          "$ref": "#/definitions/CompanyType"
+        },
+        "description": {
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "employeeCount": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "EmployeeCount"
+        },
+        "isRegistered": {
+          "type": "boolean",
+          "x-go-name": "IsRegistered"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "xm/internal/entity/request"
+    },
+    "Response": {
+      "description": "Response : The api response format",
+      "type": "object",
+      "properties": {
+        "error": {
+          "$ref": "#/definitions/CustomError"
+        },
+        "result": {
+          "x-go-name": "Result"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-package": "xm/utils"
+    },
+    "UserRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "password": {
+          "type": "string",
+          "x-go-name": "Password"
+        }
+      },
+      "x-go-package": "xm/internal/entity/request"
+    },
+    "UserResponse": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string",
+          "x-go-name": "AccessToken"
+        }
+      },
+      "x-go-package": "xm/internal/entity/response"
+    }
+  },
+  "responses": {
+    "CreateCompanyResponseWrapper": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/Company"
+      }
+    },
+    "CreateUserResponseWrapper": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/UserResponse"
+      }
+    },
+    "CustomErrorWrapper": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/CustomError"
+      }
+    },
+    "DeleteCompanyResponseWrapper": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/Response"
+      }
+    },
+    "GetCompanyResponseWrapper": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/Company"
+      }
+    },
+    "GetHealthResponse": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/Health"
+      }
+    },
+    "LoginUserResponseWrapper": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/UserResponse"
+      }
+    },
+    "PatchCompanyResponseWrapper": {
+      "description": "",
+      "schema": {
+        "$ref": "#/definitions/Response"
+      }
+    }
+  },
+  "securityDefinitions": {
+    "bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}
