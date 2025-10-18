@@ -1,15 +1,18 @@
 package router
 
 import (
-	"xm/config"
-	"xm/consts"
-	"xm/internal/handler"
-	"xm/internal/middleware"
-	"xm/internal/repo"
-	"xm/internal/usecase"
+	"pismo/config"
+	"pismo/consts"
+	"pismo/internal/handler"
+	"pismo/internal/middleware"
+	"pismo/internal/repo"
+	"pismo/internal/usecase"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Capsule struct {
@@ -33,7 +36,7 @@ func PrepareRouter(capsule *Capsule) *gin.Engine {
 
 	config := config.GetConfig()
 	if config.Environment != consts.PRODUCTION {
-		router.Static("/swaggerui/", "./swagger-ui")
+		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
 	middleware := capsule.Middleware
@@ -41,10 +44,12 @@ func PrepareRouter(capsule *Capsule) *gin.Engine {
 	router.Use(middleware.CORS())
 	router.Use(middleware.Trace())
 
-	v1 := router.Group("v1")
+	api := router.Group("api")
+	v1 := api.Group("v1")
 
 	capsule.HealthRoutes(v1)
-	capsule.CompanyRoutes(v1)
+	capsule.AccountRoutes(v1)
+	capsule.TransactionRoutes(v1)
 	capsule.UserRoutes(v1)
 
 	return router

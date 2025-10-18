@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"xm/config"
+	"pismo/config"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -30,7 +30,6 @@ func PrepareDatabase() (*gorm.DB, error) {
 		fmt.Println("error connecting database - %w", err)
 		return nil, err
 	}
-	fmt.Println("db connection established!")
 	return db, nil
 }
 

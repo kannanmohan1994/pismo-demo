@@ -1,31 +1,22 @@
 package user
 
 import (
-	"xm/internal/entity/models"
+	"context"
+	"pismo/internal/entity/models"
 )
 
-func (d *repo) GetUser(name, password string) (result *models.User, err error) {
-	d.logger.Infof("Begin Repo - GetUser")
-
-	err = d.db.Table("users").Where("name = ? AND password = ?", name, password).First(&result).Error
+func (r *repo) GetUser(ctx context.Context, name, password string) (result *models.User, err error) {
+	err = r.db.Table("users").Where("name = ? AND password = ?", name, password).First(&result).Error
 	if err != nil {
-		d.logger.Errorf("error fetching from company", err.Error())
 		return result, err
 	}
-
-	d.logger.Infof("End Repo - GetUser - %+v", result)
 	return result, err
 }
 
-func (d *repo) CreateUser(user *models.User) (result *models.User, err error) {
-	d.logger.Infof("Begin Repo - CreateUser")
-
-	err = d.db.Table("users").Create(&user).Error
+func (r *repo) CreateUser(ctx context.Context, user *models.User) (result *models.User, err error) {
+	err = r.db.Table("users").Create(&user).Error
 	if err != nil {
-		d.logger.Errorf("error creating company", err.Error())
 		return result, err
 	}
-
-	d.logger.Infof("End Repo - CreateUser %+v", user.ID)
 	return user, err
 }

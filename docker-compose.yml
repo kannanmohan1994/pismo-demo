@@ -1,8 +1,29 @@
 version: '3.9'
 
 services:
-  xm:
-    container_name: xm
+  postgres:
+    container_name: postgres
+    image: postgres:16-alpine
+    ports:
+      - '5432:5432'
+    volumes:
+      - /data/postgres:/var/lib/postgresql/data
+    env_file:
+      - docker.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pismonet
+
+  pismo:
+    container_name: pismo
     build:
       context: .
     ports:
@@ -10,62 +31,15 @@ services:
     env_file:
       - docker.env
     networks:
-      - xmnet
+      - pismonet
     depends_on:
-      - postgres
-
-  postgres:
-    container_name: postgres
-    image: postgres:14
-    expose:
-      - '5432'
-    ports:
-      - '5432:5432'
-    volumes:
-      - /data/postgres:/var/lib/postgresql/data
-    env_file:
-      - docker.env
-    networks:
-      - xmnet
-
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    ports:
-      - '8080:80'
-    volumes:
-      - /data/pgadmin:/root/.pgadmin
-    env_file:
-      - docker.env
-    networks:
-      - xmnet
-
-  zookeeper:
-    image: wurstmeister/zookeeper
-    container_name: zookeeper
-    ports:
-      - 2181:2181
-    networks:
-      - xmnet
-
-  kafka:
-    image: wurstmeister/kafka
-    container_name: kafka
-    ports:
-      - 9092:9092
-    environment:
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_ADVERTISED_HOST_NAME: kafka
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-    networks:
-      - xmnet
+      postgres:
+        condition: service_healthy
 
 networks:
-  xmnet:
+  pismonet:
     driver: bridge
 
 volumes:
   postgresdata:
-    driver: local
-  pgadmindata:
     driver: local

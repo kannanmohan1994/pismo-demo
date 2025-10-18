@@ -1,4 +1,4 @@
-FROM golang:1.21-alpine AS build
+FROM golang:1.23-alpine AS build
 
 # Setting current working directory
 WORKDIR /app
@@ -16,14 +16,14 @@ RUN CGO_ENABLED=0 go build -o ./main
 FROM alpine:3.14
 
 WORKDIR /app
-COPY --from=build /app/ /app/
+COPY --from=build /app /app
 
 # Debug /app/main
 RUN ls -lrt /app/main
 RUN ls -l /app/main
 
 # Exposing port
-EXPOSE 9000
+EXPOSE 9001
 
 # Command to run the executable
 CMD ["/app/main"]

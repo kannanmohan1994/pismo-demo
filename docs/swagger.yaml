@@ -1,0 +1,125 @@
+basePath: /api/v1
+definitions:
+  request.CreateAccountRequest:
+    properties:
+      document_number:
+        type: string
+    type: object
+  request.CreateTransactionRequest:
+    properties:
+      account_id:
+        type: integer
+      amount:
+        type: number
+      operation_type_id:
+        type: integer
+    type: object
+  utils.Meta:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  utils.Response:
+    properties:
+      data: {}
+      meta:
+        $ref: '#/definitions/utils.Meta'
+    type: object
+host: localhost:9001
+info:
+  contact: {}
+  description: This is the Pismo API documentation.
+  title: Pismo API
+  version: "1.0"
+paths:
+  /accounts:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new account with the provided document number.
+      parameters:
+      - description: Create account payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Create account
+      tags:
+      - Accounts
+  /accounts/{accountid}:
+    get:
+      description: Retrieves account information by account identifier.
+      parameters:
+      - description: Account ID
+        in: path
+        name: accountid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get account
+      tags:
+      - Accounts
+  /health:
+    get:
+      description: Returns the current health status of the service.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Health check
+      tags:
+      - Health
+  /transactions:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new transaction for the specified account and operation.
+      parameters:
+      - description: Create transaction payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Create transaction
+      tags:
+      - Transactions
+swagger: "2.0"

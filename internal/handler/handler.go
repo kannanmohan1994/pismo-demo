@@ -1,20 +1,22 @@
 package handler
 
 import (
-	"xm/internal/usecase"
-	"xm/logger"
+	"pismo/internal/validation"
+	"pismo/logger"
 )
 
 type Handler struct {
-	CompanyHandler *companyHandler
-	UserHandler    *userHandler
-	HealthHandler  *healthHandler
+	AccountHandler     *accountHandler
+	TransactionHandler *transactionHandler
+	UserHandler        *userHandler
+	HealthHandler      *healthHandler
 }
 
-func Init(uc *usecase.Usecase, logger logger.Log) *Handler {
+func Init(uc *validation.Validation, logger logger.Log) *Handler {
 	return &Handler{
-		CompanyHandler: InitCompanyHandler(uc.Company, logger),
-		UserHandler:    InitUserHandler(uc.User, logger),
-		HealthHandler:  InitHealthHandler(),
+		AccountHandler:     InitAccountHandler(uc.AccountValidation, logger),
+		TransactionHandler: InitTransactionHandler(uc.TransactionValidation, logger),
+		UserHandler:        InitUserHandler(uc.UserValidation, logger),
+		HealthHandler:      InitHealthHandler(),
 	}
 }

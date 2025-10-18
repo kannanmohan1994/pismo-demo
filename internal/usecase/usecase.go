@@ -1,22 +1,24 @@
 package usecase
 
 import (
-	"xm/internal/middleware"
-	notifier "xm/internal/notifiers"
-	"xm/internal/repo"
-	company "xm/internal/usecase/company"
-	"xm/internal/usecase/user"
-	"xm/logger"
+	"pismo/internal/middleware"
+	"pismo/internal/repo"
+	"pismo/internal/usecase/account"
+	"pismo/internal/usecase/transaction"
+	"pismo/internal/usecase/user"
+	"pismo/logger"
 )
 
 type Usecase struct {
-	Company company.UsecaseInterface
-	User    user.UsecaseInterface
+	Account     account.UsecaseInterface
+	Transaction transaction.UsecaseInterface
+	User        user.UsecaseInterface
 }
 
-func Init(repo *repo.Repo, middleware middleware.Middleware, logger logger.Log, notifier notifier.Notifier) *Usecase {
+func Init(repo *repo.Repo, tokenFunc middleware.TokenFunc, logger logger.Log) *Usecase {
 	return &Usecase{
-		Company: company.InitCompanyUsecase(repo.Company, logger, notifier),
-		User:    user.InitUserUsecase(repo.User, middleware, logger, notifier),
+		Account:     account.InitAccountUsecase(repo.Account, logger),
+		Transaction: transaction.InitTransactionUsecase(repo.Transaction, repo.Account, repo.OperationType, logger),
+		User:        user.InitUserUsecase(repo.User, tokenFunc, logger),
 	}
 }

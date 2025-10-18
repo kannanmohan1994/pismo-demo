@@ -1,40 +1,35 @@
 package utils
 
-const (
-	// StatusOk : All good
-	StatusOk = "ok"
-	// StatusNOk : Bad response
-	StatusNOk = "nok"
-)
-
-// CustomError : The error format in api response
-type CustomError struct {
-	Code    int      `json:"code"`
-	Details []string `json:"details"`
+type Meta struct {
+	Error   string `json:"error,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 // Response : The api response format
 type Response struct {
-	Status string       `json:"status"`
-	Error  *CustomError `json:"error,omitempty"`
-	Result *interface{} `json:"result,omitempty"`
+	Data any   `json:"data,omitempty"`
+	Meta *Meta `json:"meta,omitempty"`
 }
 
 // Send : General function to send api response
-func Send(payload interface{}) *Response {
-	return &Response{
-		Status: StatusOk,
-		Result: &payload,
+func Send(payload any, err error, errCode string) *Response {
+	var meta *Meta
+	if err != nil {
+		if len(errCode) == 0 {
+			errCode = errCodeMap[err]
+		} else if code, ok := errCodeMap[err]; ok {
+			errCode = code
+		} else {
+			errCode = "UNKNOWN_ERROR"
+		}
+		meta = &Meta{
+			Error:   errCode,
+			Message: err.Error(),
+		}
 	}
-}
 
-// Fail : General function to send api response
-func Fail(code int, details ...string) *Response {
 	return &Response{
-		Status: StatusNOk,
-		Error: &CustomError{
-			Code:    code,
-			Details: details,
-		},
+		Data: payload,
+		Meta: meta,
 	}
 }

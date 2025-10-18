@@ -1,15 +1,16 @@
 package user
 
 import (
-	"xm/internal/entity/models"
-	"xm/logger"
+	"context"
+	"pismo/internal/entity/models"
+	"pismo/logger"
 
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
-	CreateUser(user *models.User) (result *models.User, err error)
-	GetUser(name, password string) (result *models.User, err error)
+	CreateUser(ctx context.Context, user *models.User) (result *models.User, err error)
+	GetUser(ctx context.Context, name, password string) (result *models.User, err error)
 }
 
 type repo struct {

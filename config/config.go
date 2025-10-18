@@ -9,19 +9,16 @@ import (
 )
 
 type Config struct {
-	Environment                      string `mapstructure:"ENVIRONMENT"`
-	ServerPort                       string `mapstructure:"SERVER_PORT"`
-	PostgresHost                     string `mapstructure:"POSTGRES_HOST"`
-	PostgresDB                       string `mapstructure:"POSTGRES_DB"`
-	PostgresSchema                   string `mapstructure:"POSTGRES_SCHEMA"`
-	PostgresUser                     string `mapstructure:"POSTGRES_USER"`
-	PostgresPassword                 string `mapstructure:"POSTGRES_PASSWORD"`
-	PostgresPort                     string `mapstructure:"POSTGRES_PORT"`
-	JWKFilePath                      string `mapstructure:"JWK_FILE_PATH"`
-	JWKKid                           string `mapstructure:"JWK_KID"`
-	AccessTokenExpiryDurationSeconds uint   `mapstructure:"ACCESS_TOKEN_EXPIRY_DURATION_SECONDS"`
-	KafkaHost                        string `mapstructure:"KAFKA_HOST"`
-	KafkaPort                        string `mapstructure:"KAFKA_PORT"`
+	Environment                      string `mapstructure:"ENVIRONMENT" validate:"required"`
+	ServerPort                       string `mapstructure:"SERVER_PORT" validate:"required"`
+	PostgresHost                     string `mapstructure:"POSTGRES_HOST" validate:"required"`
+	PostgresDB                       string `mapstructure:"POSTGRES_DB" validate:"required"`
+	PostgresSchema                   string `mapstructure:"POSTGRES_SCHEMA" validate:"required"`
+	PostgresUser                     string `mapstructure:"POSTGRES_USER" validate:"required"`
+	PostgresPassword                 string `mapstructure:"POSTGRES_PASSWORD" validate:"required"`
+	PostgresPort                     string `mapstructure:"POSTGRES_PORT" validate:"required"`
+	JWTSecretKey                     string `mapstructure:"JWT_SECRET_KEY" validate:"required"`
+	AccessTokenExpiryDurationSeconds uint   `mapstructure:"ACCESS_TOKEN_EXPIRY_DURATION_SECONDS" validate:"required,gt=0"`
 }
 
 var (

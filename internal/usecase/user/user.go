@@ -1,31 +1,28 @@
 package user
 
 import (
-	"xm/internal/entity/response"
-	"xm/internal/middleware"
-	notifiers "xm/internal/notifiers"
-	user "xm/internal/repo/user"
-	"xm/logger"
+	context "context"
+	"pismo/internal/entity/response"
+	"pismo/internal/middleware"
+	user "pismo/internal/repo/user"
+	"pismo/logger"
 )
 
 type UsecaseInterface interface {
-	CreateUser(name, password string) (resp *response.UserResponse, err error)
-	LoginUser(name, password string) (resp *response.UserResponse, err error)
+	CreateUser(ctx context.Context, name, password string) (resp *response.UserResponse, err error)
+	LoginUser(ctx context.Context, name, password string) (resp *response.UserResponse, err error)
 }
 
 type usecase struct {
-	logger     logger.Log
-	notifier   notifiers.Notifier
-	middleware middleware.Middleware
-	user       user.UserRepository
+	logger    logger.Log
+	tokenFunc middleware.TokenFunc
+	user      user.UserRepository
 }
 
-func InitUserUsecase(user user.UserRepository, middleware middleware.Middleware, logger logger.Log,
-	notifier notifiers.Notifier) UsecaseInterface {
+func InitUserUsecase(user user.UserRepository, tokenFunc middleware.TokenFunc, logger logger.Log) UsecaseInterface {
 	return &usecase{
-		logger:     logger,
-		notifier:   notifier,
-		middleware: middleware,
-		user:       user,
+		logger:    logger,
+		tokenFunc: tokenFunc,
+		user:      user,
 	}
 }

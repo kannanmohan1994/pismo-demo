@@ -2,8 +2,8 @@ package logger
 
 import (
 	"context"
-	"xm/config"
-	"xm/consts"
+	"pismo/config"
+	"pismo/consts"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

@@ -1,22 +1,17 @@
 package consts
 
-type CompanyType string
+import (
+	"time"
 
-const (
-	CompanyTypeCorporations       CompanyType = "Corporations"
-	CompanyTypeNonProfit          CompanyType = "NonProfit"
-	CompanyTypeCooperative        CompanyType = "Cooperative"
-	CompanyTypeSoleProprietorship CompanyType = "Sole Proprietorship"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 const (
-	CorrelationID string = "correlation-id"
+	CorrelationID        = "correlation-id"
+	ContextAuthJWTClaims = "auth_claims"
 )
 
-const (
-	KafkaGroupId = "kafka-group-id"
-)
-
-const (
-	NotifyEventCompleted = "event.completed"
+var (
+	SigningMethodHS256     = jwt.SigningMethodHS256
+	DefaultJWTValidityTime = 24 * time.Hour
 )

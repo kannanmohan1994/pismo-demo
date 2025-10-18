@@ -1,62 +1,55 @@
-## Description
-XM - An application to handle companies. It should provide the following operations:
-- Create
-- Patch
-- Delete
-- Get (one)
+# Pismo API
 
-## Installation
-- Install Golang => https://golang.org/doc/install
-- Install Docker => sudo snap install docker
+Backend service that exposes account and transaction endpoints on top of a Postgres database. The project is containerised so you can bring everything up with Docker, but you can also run it directly with Go if you prefer.
 
-### Local Setup
-- Clone: git clone https://github.com/kannanmohan1994/xm-demo.git
-- Setup infra (postgres, pgadmin, kafka): docker-compose up 
-- Run migrations: make migrate-up
-- Create kafka topics: bash create-topics.sh (OPTIONAL)
-- Run application: make tidy, make run 
-- Testout API's: Go to http://localhost:9000/swaggerui/ 
+## Prerequisites
 
-### API testing in swagger
-- POST /v1/user/register => Generate user with username and password combination. Get access token in response
-- POST /v1/user/login => Regenerate access token for username and password combination
-- Set access token in swagger-ui in Authorize to try-out following API's
-- POST /v1/company => Create company and returns company details with id. AUTHORIZED
-- GET /v1/company/{company-id} => Fetch company for company-id. AUTHORIZED
-- PATCH /v1/company/{company-id} => Patch company for company-id. AUTHORIZED
-- DELETE /v1/company/{company-id} => Delete company for company-id. AUTHORIZED
+- [REQUIRED] Docker 24+ (or Docker Desktop) and Docker Compose v2 (`docker compose` CLI).
+- [OPTIONAL] GNU Make (bundled on macOS/Linux; install via [chocolatey](https://community.chocolatey.org/packages/make) on Windows).
+- [OPTIONAL] Go 1.23 if you want to run the binary outside containers.
 
-### Useful Commands
-- Download and Install all the dependent packages
-```bash
-    make tidy
-```
-- To Run the Server:
-```bash
-    make run
-```
-- To Run Tests:
-```bash
-    make test
-```
-- To Run Lint:
-```bash
-    make lint
-```
-- To Setup Swagger Docs:
-```bash
-    make swagger
-```
-- To Run/Remove migrations:
-```bash
-    make migrate-up
-    make migrate-down
-```
+## Configuration
 
-### Environment Variables Config
-Configs are present in .env file
+1. Copy the sample environment file:
 
-## Tech Stack
+   - Copy env.sample --> .env
 
-*Database:* Postgres
-*Server:* Golang
+If you need to change container credentials, edit `docker.env` first and then reflect the same values in `.env`.
+
+## Quick start
+
+1. **Build and start containers**
+   ```bash
+   docker compose up -d --build
+   ```
+
+   This launches a Postgres 16 instance and the API container using the configuration declared in `docker-compose.yml`.
+2. **Verify services**
+   ```bash
+   docker compose ps
+   docker compose logs -f pismo   # optional
+   ```
+
+   Wait until the `postgres` container reports healthy.
+3. **Run database migrations once**
+   - `make migrate-up` OR the command mentioned under make migrate-up in Makefile if make command is not supported.
+
+Once migrations succeed, the API is available at `http://localhost:9001`. Open `http://localhost:9001/swagger/index.html` for interactive docs (disabled in production mode).
+
+### Common tasks
+
+- Run tests: `make test`
+- Generate Swagger spec: `make swagger`
+- Stop and remove containers: `docker compose down`
+- Drop the schema (dev only): `make migrate-down`
+
+## Troubleshooting
+
+- **Permission errors writing to `/data/postgres`**: adjust the volume in `docker-compose.yml` to a path your user owns, for example `./.postgres:/var/lib/postgresql/data`
+
+## Project layout
+
+- `app/` – Gin HTTP server bootstrap and routing.
+- `internal/` – Domain handlers, validation, use cases, repositories, and mocks.
+- `db/migrations/` – SQL migrations executed via `make migrate-up`.
+- `docs/` – Generated Swagger specification.
