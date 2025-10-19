@@ -1,6 +1,8 @@
 package utils
 
-import "errors"
+import (
+	"errors"
+)
 
 var (
 	ErrInvalidToken               = errors.New("invalid token")
@@ -17,6 +19,10 @@ var (
 	ErrInvalidAmount              = errors.New("invalid amount")
 	ErrInvalidAccountID           = errors.New("invalid account")
 	ErrInvalidOperationTypeID     = errors.New("invalid operation type")
+
+	// error template
+	ErrOperationTypeNonCredit = "Invalid transaction: operation type '%s' is non-credit, but received a positive amount. Use a negative amount for this operation."
+	ErrOperationTypeCredit    = "Invalid transaction: operation type '%s' is credit, but received a negative amount. Use a positive amount for this operation."
 )
 
 var (

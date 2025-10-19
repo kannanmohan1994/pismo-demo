@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS accounts (
 -- OPERATION TYPES TABLE
 CREATE TABLE IF NOT EXISTS operation_types (
     id serial PRIMARY KEY,
-    description varchar NOT NULL
+    description varchar NOT NULL,
+    is_credit boolean NOT NULL
 );
 
 -- TRANSACTIONS TABLE

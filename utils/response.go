@@ -16,11 +16,11 @@ func Send(payload any, err error, errCode string) *Response {
 	var meta *Meta
 	if err != nil {
 		if len(errCode) == 0 {
-			errCode = errCodeMap[err]
-		} else if code, ok := errCodeMap[err]; ok {
-			errCode = code
-		} else {
-			errCode = "UNKNOWN_ERROR"
+			if code, ok := errCodeMap[err]; ok {
+				errCode = code
+			} else {
+				errCode = "BAD_REQUEST"
+			}
 		}
 		meta = &Meta{
 			Error:   errCode,
