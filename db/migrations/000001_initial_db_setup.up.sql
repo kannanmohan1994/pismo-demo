@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- ACCOUNTS TABLE
 CREATE TABLE IF NOT EXISTS accounts (
     id serial PRIMARY KEY,
-    document_number varchar(20) NOT NULL UNIQUE
+    document_number varchar(11) NOT NULL UNIQUE
 );
 
 -- OPERATION TYPES TABLE
@@ -28,3 +28,10 @@ CREATE TABLE IF NOT EXISTS transactions (
     FOREIGN KEY (account_id) REFERENCES accounts(id),
     FOREIGN KEY (operation_type_id) REFERENCES operation_types(id)
 );
+
+INSERT INTO public.operation_types (description, is_credit)
+VALUES
+  ('CASH PURCHASE', false),
+  ('INSTALLMENT PURCHASE', false),
+  ('WITHDRAWAL', false),
+  ('PAYMENT', true);

@@ -15,7 +15,7 @@ var (
 	ErrOperationTypeFetch         = errors.New("operation details fetch failed")
 	ErrOperationTypeNotFound      = errors.New("operation not found")
 	ErrTransactionCreation        = errors.New("transaction creation failed")
-	ErrInvalidDocumentNumber      = errors.New("invalid document number")
+	ErrInvalidDocumentNumber      = errors.New("invalid document number: must be exactly 11 digits")
 	ErrInvalidAmount              = errors.New("invalid amount")
 	ErrInvalidAccountID           = errors.New("invalid account")
 	ErrInvalidOperationTypeID     = errors.New("invalid operation type")

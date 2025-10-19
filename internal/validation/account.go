@@ -6,6 +6,7 @@ import (
 	"pismo/internal/entity/request"
 	"pismo/internal/usecase/account"
 	"pismo/utils"
+	"regexp"
 )
 
 type AccountValidation struct {
@@ -19,7 +20,8 @@ func InitAccountValidation(uc account.UsecaseInterface) account.UsecaseInterface
 }
 
 func (u *AccountValidation) CreateAccount(ctx context.Context, req *request.CreateAccountRequest) (result *models.Accounts, err error) {
-	if len(req.DocumentNumber) == 0 {
+	re := regexp.MustCompile(`^\d{11}$`)
+	if !re.MatchString(req.DocumentNumber) {
 		return nil, utils.ErrInvalidDocumentNumber
 	}
 	return u.accountUC.CreateAccount(ctx, req)

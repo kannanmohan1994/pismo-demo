@@ -18,7 +18,7 @@ type Config struct {
 	PostgresPassword                 string `mapstructure:"POSTGRES_PASSWORD" validate:"required"`
 	PostgresPort                     string `mapstructure:"POSTGRES_PORT" validate:"required"`
 	JWTSecretKey                     string `mapstructure:"JWT_SECRET_KEY" validate:"required"`
-	AccessTokenExpiryDurationSeconds uint   `mapstructure:"ACCESS_TOKEN_EXPIRY_DURATION_SECONDS" validate:"required,gt=0"`
+	AccessTokenExpiryDurationSeconds int    `mapstructure:"ACCESS_TOKEN_EXPIRY_DURATION_SECONDS" validate:"required,gt=0"`
 }
 
 var (

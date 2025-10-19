@@ -18,20 +18,21 @@ func TestService_CreateTransaction(t *testing.T) {
 	defer ctrl.Finish()
 
 	testCases := []struct {
-		name                       string
-		request                    *request.CreateTransactionRequest
-		repoErr                    map[string]error
-		wantErr                    error
-		accountRepoCallCount       int
-		operationTypeRepoCallCount int
-		txnRepoCallCount           int
+		name                          string
+		request                       *request.CreateTransactionRequest
+		repoErr                       map[string]error
+		wantErr                       error
+		accountRepoCallCount          int
+		operationTypeRepoCallCount    int
+		operationTypeRepoMockResponse *models.OperationType
+		txnRepoCallCount              int
 	}{
 		{
 			name: "should_return_error_for_account_repo_call",
 			request: &request.CreateTransactionRequest{
 				AccountID:       1,
 				OperationTypeID: 1,
-				Amount:          100,
+				Amount:          -100,
 			},
 			repoErr:              map[string]error{"GetAccount": errors.New("account repo call fail")},
 			wantErr:              errors.New("account repo call fail"),
@@ -42,7 +43,7 @@ func TestService_CreateTransaction(t *testing.T) {
 			request: &request.CreateTransactionRequest{
 				AccountID:       1,
 				OperationTypeID: 1,
-				Amount:          100,
+				Amount:          -100,
 			},
 			repoErr:                    map[string]error{"GetOperationType": errors.New("op type repo call fail")},
 			wantErr:                    errors.New("op type repo call fail"),
@@ -50,28 +51,55 @@ func TestService_CreateTransaction(t *testing.T) {
 			operationTypeRepoCallCount: 1,
 		},
 		{
+			name: "should_return_error_for_operation_type_credit_mismatch_call",
+			request: &request.CreateTransactionRequest{
+				AccountID:       1,
+				OperationTypeID: 1,
+				Amount:          100, // positive amount given for an operation that expects negative amount
+			},
+			repoErr:                    nil,
+			wantErr:                    errors.New("Invalid transaction: operation type 'CASH PURCHASE' is non-credit, but received a positive amount. Use a negative amount for this operation."),
+			accountRepoCallCount:       1,
+			operationTypeRepoCallCount: 1,
+			operationTypeRepoMockResponse: &models.OperationType{
+				ID:          1,
+				Description: "CASH PURCHASE",
+				IsCredit:    false,
+			},
+		},
+		{
 			name: "should_return_error_for_txn_repo_call",
 			request: &request.CreateTransactionRequest{
 				AccountID:       1,
 				OperationTypeID: 1,
-				Amount:          100,
+				Amount:          -100,
 			},
 			repoErr:                    map[string]error{"CreateTransaction": errors.New("txn repo call fail")},
 			wantErr:                    errors.New("txn repo call fail"),
 			accountRepoCallCount:       1,
 			operationTypeRepoCallCount: 1,
 			txnRepoCallCount:           1,
+			operationTypeRepoMockResponse: &models.OperationType{
+				ID:          1,
+				Description: "CASH PURCHASE",
+				IsCredit:    false,
+			},
 		},
 		{
 			name: "success",
 			request: &request.CreateTransactionRequest{
 				AccountID:       1,
 				OperationTypeID: 1,
-				Amount:          100,
+				Amount:          -100,
 			},
 			accountRepoCallCount:       1,
 			operationTypeRepoCallCount: 1,
 			txnRepoCallCount:           1,
+			operationTypeRepoMockResponse: &models.OperationType{
+				ID:          1,
+				Description: "CASH PURCHASE",
+				IsCredit:    false,
+			},
 		},
 	}
 
@@ -83,7 +111,7 @@ func TestService_CreateTransaction(t *testing.T) {
 			logger := logger.NewNoop()
 			txnRepo.EXPECT().CreateTransaction(context.Background(), gomock.Any()).Return(&models.Transactions{}, tt.repoErr["CreateTransaction"]).Times(tt.txnRepoCallCount)
 			accountRepo.EXPECT().GetAccount(context.Background(), gomock.Any()).Return(&models.Accounts{}, tt.repoErr["GetAccount"]).Times(tt.accountRepoCallCount)
-			operationTypeRepo.EXPECT().GetOperationType(context.Background(), gomock.Any()).Return(&models.OperationType{}, tt.repoErr["GetOperationType"]).Times(tt.operationTypeRepoCallCount)
+			operationTypeRepo.EXPECT().GetOperationType(context.Background(), gomock.Any()).Return(tt.operationTypeRepoMockResponse, tt.repoErr["GetOperationType"]).Times(tt.operationTypeRepoCallCount)
 			s := InitTransactionUsecase(txnRepo, accountRepo, operationTypeRepo, logger)
 
 			_, err := s.CreateTransaction(context.Background(), tt.request)

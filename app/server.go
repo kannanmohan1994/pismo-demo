@@ -11,6 +11,7 @@ import (
 	"pismo/internal/usecase"
 	"pismo/internal/validation"
 	"pismo/logger"
+	"time"
 )
 
 func Start() {
@@ -23,7 +24,7 @@ func Start() {
 	}
 
 	logger := logger.NewLogger(config)
-	tokenFunc := middleware.NewUserToken(consts.SigningMethodHS256, config.JWTSecretKey, consts.DefaultJWTValidityTime)
+	tokenFunc := middleware.NewUserToken(consts.SigningMethodHS256, config.JWTSecretKey, time.Duration(config.AccessTokenExpiryDurationSeconds*int(time.Second)))
 
 	mwr := middleware.InitMiddleware(*config, logger)
 	repo := repo.InitRepo(db, logger)

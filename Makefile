@@ -37,7 +37,7 @@ run: swagger # Builds the project and keeps swagger spec up to date
 migrate-up: 
 	docker run -v $(PWD)/db/migrations:/migrations --network host --rm migrate/migrate -path=/migrations/ -database "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?sslmode=disable&search_path=$(POSTGRES_SCHEMA)" up
 migrate-down: 
-	docker run -v $(PWD)/db/migrations:/migrations --network host --rm migrate/migrate -path=/migrations/ -database "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?sslmode=disable&search_path=$(POSTGRES_SCHEMA)" down --all
+	docker run -v $(PWD)/db/migrations:/migrations --network host --rm migrate/migrate -path=/migrations/ -database "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?sslmode=disable&search_path=$(POSTGRES_SCHEMA)" down 1
 migrate-create:
 	docker run --rm \
 		-u $(shell id -u):$(shell id -g) \
